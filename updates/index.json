@@ -5,14 +5,21 @@
    "name": "Language name: Persian (plain Unicode)",
    "file": "patch_001.zip",
    "size": 11803,
-   "sha256": "930ed74e281abf29a1646da30ea72cf914a7f90e447e31913d3689c82bcae16c"
+   "sha256": "5ee3e8742d7d6333d5fc2ac3c48c278574227c9393a875257bf4e743eb9e1ae5"
   },
   {
    "id": 2,
    "name": "Language name: Persian (shaped, visual order)",
    "file": "patch_002.zip",
    "size": 11844,
-   "sha256": "934ee613aee1408790a404ad81102f628bd11615c6d8ddfefddbb94402111f90"
+   "sha256": "400062ae3d083deb0a14b01ab7908ea2e9c24295bb27b9877cfb4767b209e30b"
+  },
+  {
+   "id": 3,
+   "name": "Font: Vazir replaces UbiGame Text (regular, bold)",
+   "file": "patch_003.zip",
+   "size": 115230,
+   "sha256": "48e5eb4775912f871f2b13c77e7fb847ec78a42ba32956b4bc2fac1a18613edb"
   }
  ]
 }
