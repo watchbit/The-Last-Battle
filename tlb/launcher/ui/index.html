@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>آخرین نبرد</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="auth" class="overlay">
+  <div class="card auth">
+    <img src="logo.png" class="auth-logo" alt="آخرین نبرد">
+    <div class="tabs"><button class="tab active" data-auth="login">ورود</button><button class="tab" data-auth="register">ثبت‌نام</button></div>
+    <form id="authForm">
+      <label>نام کاربری<input id="aUser" autocomplete="username" dir="ltr" required></label>
+      <label id="aDispRow" hidden>نام نمایشی<input id="aDisp"></label>
+      <label>رمز عبور<input id="aPass" type="password" autocomplete="current-password" dir="ltr" required></label>
+      <p id="aErr" class="error"></p>
+      <button class="primary wide" id="aSubmit">ورود</button>
+    </form>
+    <button class="link" id="offline">ادامه بدون ورود (فقط بازی آفلاین)</button>
+  </div>
+</div>
+
+<aside>
+  <img src="icon.png" class="side-icon" alt="">
+  <nav>
+    <button class="nav active" data-page="home">خانه</button>
+    <button class="nav" data-page="multi">چندنفره</button>
+    <button class="nav" data-page="friends">دوستان <span id="reqBadge" class="badge" hidden></span></button>
+    <button class="nav" data-page="ranks">رتبه‌بندی</button>
+    <button class="nav" data-page="profile">پروفایل</button>
+    <button class="nav" data-page="settings">تنظیمات</button>
+  </nav>
+  <div class="who"><span id="whoName">مهمان</span><span id="srv" class="dot"></span></div>
+</aside>
+
+<main>
+  <section id="page-home" class="page active">
+    <img src="logo.png" class="hero-logo" alt="آخرین نبرد">
+    <div class="row-cards">
+      <div class="card grow">
+        <h3>به‌روزرسانی</h3>
+        <p id="updState">در حال بررسی...</p>
+        <div class="progress" id="prog" hidden><div id="progBar"></div></div>
+        <p id="progMsg" class="muted"></p>
+        <div class="row"><button class="primary" id="btnUpdate" hidden>به‌روزرسانی</button><button class="primary" id="btnInstall" hidden>دانلود و نصب بازی</button></div>
+      </div>
+      <div class="card grow"><h3>اخبار</h3><p id="news" class="news">-</p></div>
+    </div>
+    <div class="modes">
+      <button class="mode" data-mode="campaign"><b>کمپین</b><span>داستان جنگ از تونس تا تورگاو</span></button>
+      <button class="mode" data-mode="battle"><b>نبرد با هوش مصنوعی</b><span>نبرد آفلاین روی همه نقشه‌ها</span></button>
+      <button class="mode" data-mode="tutorial"><b>آموزش</b><span>یادگیری کنترل‌ها و نیرنگ‌ها</span></button>
+      <button class="mode accent" data-mode="multiplayer"><b>چندنفره</b><span>نبرد آنلاین با حساب کاربری</span></button>
+    </div>
+    <p class="muted small">بازی با منوی اصلی باز می‌شود؛ حالت انتخاب‌شده را از همان‌جا شروع کنید.</p>
+  </section>
+
+  <section id="page-multi" class="page">
+    <h2>چندنفره</h2>
+    <div class="row"><span id="mpStats" class="muted"></span><button id="mpRefresh">تازه‌سازی</button><button class="primary" data-mode="multiplayer">ورود به بازی چندنفره</button></div>
+    <table><thead><tr><th>نام لابی</th><th>نقشه</th><th>میزبان</th><th>بازیکنان</th></tr></thead><tbody id="lobbies"></tbody></table>
+    <p class="muted small">ساخت لابی و پیوستن به آن داخل بازی، از منوی چندنفره انجام می‌شود.</p>
+  </section>
+
+  <section id="page-friends" class="page">
+    <h2>دوستان</h2>
+    <div class="row"><input id="fSearch" placeholder="جستجوی بازیکن"><button id="fSearchBtn">جستجو</button></div>
+    <div id="fResults" class="list"></div>
+    <h3>درخواست‌های دوستی</h3>
+    <div id="fRequests" class="list"></div>
+    <h3>دوستان من</h3>
+    <div id="fList" class="list"></div>
+  </section>
+
+  <section id="page-ranks" class="page">
+    <h2>رتبه‌بندی</h2>
+    <div class="tabs"><button class="tab active" data-rank="xp">تجربه</button><button class="tab" data-rank="wins">پیروزی</button><button class="tab" data-rank="level">سطح</button></div>
+    <table><thead><tr><th>رتبه</th><th>بازیکن</th><th>سطح</th><th>تجربه</th><th>برد</th><th>باخت</th></tr></thead><tbody id="ranks"></tbody></table>
+  </section>
+
+  <section id="page-profile" class="page">
+    <h2>پروفایل</h2>
+    <div class="card">
+      <div class="stats" id="pStats"></div>
+      <label>نام نمایشی<input id="pDisp"></label>
+      <button id="pDispSave">ذخیره نام</button>
+    </div>
+    <div class="card">
+      <h3>تغییر رمز عبور</h3>
+      <label>رمز فعلی<input id="pOld" type="password" dir="ltr"></label>
+      <label>رمز جدید<input id="pNew" type="password" dir="ltr"></label>
+      <button id="pPassSave">تغییر رمز</button>
+    </div>
+    <button class="danger" id="logout">خروج از حساب</button>
+  </section>
+
+  <section id="page-settings" class="page">
+    <h2>تنظیمات</h2>
+    <div class="card">
+      <h3>پوشه بازی</h3>
+      <p id="sGame" class="ltr muted">-</p>
+      <div class="row"><button id="sPick">انتخاب پوشه</button><button id="sVerify">بررسی سلامت فایل‌ها</button></div>
+    </div>
+    <div class="card">
+      <h3>زبان بازی</h3>
+      <div class="row"><label class="inline"><input type="radio" name="lang" value="fa"> فارسی</label><label class="inline"><input type="radio" name="lang" value="en"> English</label></div>
+    </div>
+    <div class="card">
+      <h3>سرور</h3>
+      <div class="row"><input id="sServer" dir="ltr"><button id="sServerSave">ذخیره</button></div>
+    </div>
+    <p class="muted small">آخرین نبرد بر پایه بازی R.U.S.E. ساخت Eugen Systems و انتشار Ubisoft است.</p>
+  </section>
+</main>
+
+<div id="modal" class="overlay" hidden><div class="card" id="modalBody"></div></div>
+<div id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>

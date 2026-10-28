@@ -1,0 +1,7 @@
+pywebview>=5
+pefile
+fonttools
+arabic-reshaper
+python-bidi
+pillow
+numpy
