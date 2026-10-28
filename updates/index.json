@@ -5,56 +5,63 @@
    "name": "Language name: Persian (plain Unicode)",
    "file": "patch_001.zip",
    "size": 11803,
-   "sha256": "f8230ff88585f46780dbb97d076ec9b4992750ebbfd95bf3c577e64890251505"
+   "sha256": "918cfee37662f640638618d400dd6b04053f51487b831411e425eb33a2b21090"
   },
   {
    "id": 2,
    "name": "Language name: Persian (shaped, visual order)",
    "file": "patch_002.zip",
    "size": 11844,
-   "sha256": "7495869e7fb1a4729cdeb5d7209f2d4555a664087c3ee0c98f0314dfe911a8b4"
+   "sha256": "7d4facc388b927817d692deac1950ab4e5150268f8b02ec5d45a301fb1169064"
   },
   {
    "id": 3,
    "name": "Font: Vazir replaces UbiGame Text (regular, bold)",
    "file": "patch_003.zip",
-   "size": 115230,
-   "sha256": "540b86e8100463f1aa326fe80fff59c7cd62370543b350e13b20edd25537f45e"
+   "size": 115231,
+   "sha256": "5b99467ba7236451c9e8a55e1856a6dc46e07a2726ca393b90376a853ad431fe"
   },
   {
    "id": 4,
    "name": "Persian UI: menus, options, in-game interface",
    "file": "patch_004.zip",
    "size": 41826,
-   "sha256": "e7353c6f1fa9b0b60f4615e2aa76f27b412df934966deb021d5aaba909f87f8c"
+   "sha256": "9d221c85b034d0642dbff78a4430ac6f23cb49b6a45a78704e6c01edd458c17c"
   },
   {
    "id": 5,
    "name": "Persian units, buildings and city names",
    "file": "patch_005.zip",
    "size": 15555,
-   "sha256": "541cbeb99a1a8eb59a431363493e79d3de7b216703d213753490cbc5fd8296f9"
+   "sha256": "d92eeaf0c43d8f8b65ba0cd4d8e3c8f0c8e825b1a9053107b97163465e5918dc"
   },
   {
    "id": 6,
    "name": "Persian unit descriptions (encyclopedia)",
    "file": "patch_006.zip",
    "size": 37606,
-   "sha256": "4fea2914c063a3c6fa0cd4bbd40205c4d9ef7fc99175204cbb3f3de3c022221c"
+   "sha256": "dcb52e221cebc9a9f0706d74b75c1f21b6a7e6b20ae559d343b3bea1a5f173ff"
   },
   {
    "id": 7,
    "name": "Persian campaign, operations and tutorial texts",
    "file": "patch_007.zip",
    "size": 302783,
-   "sha256": "e1b2a8e43eeaa5d4c8edd2604b0754ddc154895cd083c780433ba5127d8ee433"
+   "sha256": "2ab5ddafaf82dec6a951003fe358fa1b2fa00ac3fc1e96ceb07d5388999d0677"
   },
   {
    "id": 8,
    "name": "Brand: The Last Battle logo replaces the R.U.S.E. logo in menus",
    "file": "patch_008.zip",
    "size": 426379,
-   "sha256": "7cf9563095c3c0fa86975246dfdafef59731204395639aa95dae4d7d3364630c"
+   "sha256": "b9529835c21432cf135b1ef344342200dd494c093b59b43392211c30efcdcce8"
+  },
+  {
+   "id": 9,
+   "name": "Brand: The Last Battle icon in RUSE.exe",
+   "file": "patch_009.zip",
+   "size": 39642,
+   "sha256": "92292b1998d4e28f11aec2ad581152a81a1ae7e2d43b07e84803a3651e03fb27"
   }
  ]
 }

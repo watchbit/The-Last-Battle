@@ -96,6 +96,59 @@ def logo_ops(ed):
     return ops
 
 
+def icon_ops(game):
+    import io
+    import struct
+    import pefile
+    from PIL import Image
+    exe = os.path.join(game, "RUSE.exe")
+    pe = pefile.PE(exe, fast_load=True)
+    pe.parse_data_directories(directories=[pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_RESOURCE"]])
+    src = Image.open(os.path.join(BRAND, "icon.png")).convert("RGBA")
+    icons, group = {}, None
+    for t in pe.DIRECTORY_ENTRY_RESOURCE.entries:
+        for n in t.directory.entries:
+            for leaf in n.directory.entries:
+                if t.id == 3:
+                    icons[n.id] = leaf
+                elif t.id == 14 and group is None:
+                    group = leaf
+    data = pe.__data__
+    ops = []
+    goff = pe.get_offset_from_rva(group.data.struct.OffsetToData)
+    count = struct.unpack_from("<H", data, goff + 4)[0]
+    for i in range(count):
+        e = goff + 6 + 14 * i
+        size_in_res, icon_id = struct.unpack_from("<IH", data, e + 8)
+        leaf = icons[icon_id]
+        off = pe.get_offset_from_rva(leaf.data.struct.OffsetToData)
+        old = bytes(data[off:off + size_in_res])
+        if old[:8] == b"\x89PNG\r\n\x1a\n":
+            w = struct.unpack_from(">I", old, 16)[0]
+            img = src.resize((w, w), Image.LANCZOS)
+            new = None
+            for colors in (256, 192, 128, 96, 64, 56, 48, 32, 16):
+                b = io.BytesIO()
+                img.quantize(colors=colors, method=Image.Quantize.FASTOCTREE).save(b, "PNG", optimize=True)
+                if len(b.getvalue()) <= size_in_res:
+                    new = b.getvalue()
+                    break
+        else:
+            hsize, w, h2, planes, bpp = struct.unpack_from("<IiiHH", old, 0)
+            if bpp != 32:
+                continue
+            img = src.resize((w, w), Image.LANCZOS).transpose(Image.FLIP_TOP_BOTTOM)
+            r, g, b_, a = img.split()
+            xor = Image.merge("RGBA", (b_, g, r, a)).tobytes()
+            new = old[:hsize] + xor + old[hsize + len(xor):]
+        if new is None or len(new) > size_in_res:
+            continue
+        ops.append(("RUSE.exe", off, new))
+        ops.append(("RUSE.exe", leaf.data.struct.get_file_offset() + 4, struct.pack("<I", len(new))))
+        ops.append(("RUSE.exe", e + 8, struct.pack("<I", len(new))))
+    return ops
+
+
 def main(game, out, fonts):
     ed = edata.open_dat(os.path.join(game, DATA_DIR, "ZZ_Win.dat"))
     entries = []
@@ -107,6 +160,7 @@ def main(game, out, fonts):
     entries.append(build_patch(out, 6, "Persian unit descriptions (encyclopedia)", dic_ops(ed, "descriptions", ["long_description_unite.dic"]), []))
     entries.append(build_patch(out, 7, "Persian campaign, operations and tutorial texts", dic_ops(ed, "campaign", campaign_files(ed)), []))
     entries.append(build_patch(out, 8, "Brand: The Last Battle logo replaces the R.U.S.E. logo in menus", logo_ops(ed), []))
+    entries.append(build_patch(out, 9, "Brand: The Last Battle icon in RUSE.exe", [], [], icon_ops(game)))
     write_index(out, entries)
 
 

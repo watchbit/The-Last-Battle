@@ -13,7 +13,7 @@ DATA_DIR = os.path.join("Data", "PC", "190852")
 STATE_DIR = "_tlb"
 
 
-def build_patch(out_dir, patch_id, name, dat_ops, loose_ops):
+def build_patch(out_dir, patch_id, name, dat_ops, loose_ops, byte_ops=()):
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, "patch_%03d.zip" % patch_id)
     ops = []
@@ -27,6 +27,10 @@ def build_patch(out_dir, patch_id, name, dat_ops, loose_ops):
             n += 1
             z.writestr("payload/%d.bin" % n, blob)
             ops.append({"type": "file", "path": rel, "payload": "payload/%d.bin" % n})
+        for rel, offset, blob in byte_ops:
+            n += 1
+            z.writestr("payload/%d.bin" % n, blob)
+            ops.append({"type": "bytes", "path": rel, "offset": offset, "payload": "payload/%d.bin" % n})
         z.writestr("manifest.json", json.dumps({"id": patch_id, "name": name, "ops": ops}, ensure_ascii=False, indent=1))
     digest = hashlib.sha256(open(path, "rb").read()).hexdigest()
     return {"id": patch_id, "name": name, "file": os.path.basename(path), "size": os.path.getsize(path), "sha256": digest}
@@ -86,6 +90,16 @@ def apply_patch(game, patch_zip):
                 os.makedirs(os.path.dirname(target), exist_ok=True)
                 with open(target, "wb") as f:
                     f.write(z.read(op["payload"]))
+        for op in man["ops"]:
+            if op["type"] == "bytes":
+                blob = z.read(op["payload"])
+                with open(os.path.join(game, op["path"]), "r+b") as f:
+                    f.seek(op["offset"])
+                    k = "undo/%d.bin" % len(undo_ops)
+                    undo.writestr(k, f.read(len(blob)))
+                    undo_ops.append({"type": "bytes", "path": op["path"], "offset": op["offset"], "original": k})
+                    f.seek(op["offset"])
+                    f.write(blob)
         undo.writestr("undo.json", json.dumps(undo_ops))
         undo.close()
         st["applied"].append(man["id"])
@@ -105,6 +119,11 @@ def revert_patch(game, patch_id):
                 by_dat.setdefault(op["dat"], {})[op["path"]] = z.read(op["original"])
         for dat, rep in by_dat.items():
             edata.open_dat(os.path.join(game, DATA_DIR, dat)).batch_update(rep, {})
+        for op in reversed(ops):
+            if op["type"] == "bytes":
+                with open(os.path.join(game, op["path"]), "r+b") as f:
+                    f.seek(op["offset"])
+                    f.write(z.read(op["original"]))
         for op in ops:
             if op["type"] == "file":
                 target = os.path.join(game, op["path"])
