@@ -71,6 +71,7 @@ def main(game, out, fonts):
     entries.append(build_patch(out, 3, "Font: Vazir replaces UbiGame Text (regular, bold)", font_ops(fonts), []))
     entries.append(build_patch(out, 4, "Persian UI: menus, options, in-game interface", dic_ops(ed, "ui", UI_FILES), []))
     entries.append(build_patch(out, 5, "Persian units, buildings and city names", dic_ops(ed, "units", ["baseunite.dic", "ville_multi.dic"]), []))
+    entries.append(build_patch(out, 6, "Persian unit descriptions (encyclopedia)", dic_ops(ed, "descriptions", ["long_description_unite.dic"]), []))
     write_index(out, entries)
 
 

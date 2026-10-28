@@ -5,35 +5,42 @@
    "name": "Language name: Persian (plain Unicode)",
    "file": "patch_001.zip",
    "size": 11803,
-   "sha256": "8826d0699e21e6c4a653e2ebfa1e9af4a457d19a74b5f991243e4399783ed64a"
+   "sha256": "22024e9df76799da840ff72d111f5b50d2d93fe1a69682d56638ac44f658bb7c"
   },
   {
    "id": 2,
    "name": "Language name: Persian (shaped, visual order)",
    "file": "patch_002.zip",
    "size": 11844,
-   "sha256": "298f4270cbcfb5b4aa9a579560f1e769e1fb78d948232587f6523f75cc036d75"
+   "sha256": "46b56a78753f08f01bf3b3beec0e8f5c2af9a5635c35865d84cfe4af9837b04a"
   },
   {
    "id": 3,
    "name": "Font: Vazir replaces UbiGame Text (regular, bold)",
    "file": "patch_003.zip",
-   "size": 115230,
-   "sha256": "0c3aa12d82eb3d686669b1e21fde5050839ab18519c03f52f764958c31788d13"
+   "size": 115229,
+   "sha256": "d22577a00130b482a6c187b23287a8a7dc8eec13785d5084015e0f78c55a6e72"
   },
   {
    "id": 4,
    "name": "Persian UI: menus, options, in-game interface",
    "file": "patch_004.zip",
    "size": 41826,
-   "sha256": "ca27c7b61b3704b33f3d79674d8e33822832a93bc7bac1121b4b5daf7dfcb6ee"
+   "sha256": "8591f4ad98913b119275863535ed567a147dfa0bb875b0a792341d98e45dd4e3"
   },
   {
    "id": 5,
    "name": "Persian units, buildings and city names",
    "file": "patch_005.zip",
    "size": 15555,
-   "sha256": "065d733521958e3280626cb0c9d498867a2aecc57a37ecde3a862af2c6319ccb"
+   "sha256": "82598b8c6bb63aa26c8f8ee9d05248cf01f7965df463ffbca92ae6e6b51e25c7"
+  },
+  {
+   "id": 6,
+   "name": "Persian unit descriptions (encyclopedia)",
+   "file": "patch_006.zip",
+   "size": 37606,
+   "sha256": "8268c99236ab617199a1e8b66b51d5918634ba5660f750aa9431641506df2ff8"
   }
  ]
 }
