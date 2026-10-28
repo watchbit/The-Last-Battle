@@ -63,6 +63,11 @@ def dic_ops(ed, name, files):
     return ops
 
 
+def campaign_files(ed):
+    base = (LANG_DIR + "translations\\us\\").lower()
+    return [p[len(base):] for p in ed.list() if p.lower().startswith(base) and "\\" in p[len(base):]]
+
+
 def main(game, out, fonts):
     ed = edata.open_dat(os.path.join(game, DATA_DIR, "ZZ_Win.dat"))
     entries = []
@@ -72,6 +77,7 @@ def main(game, out, fonts):
     entries.append(build_patch(out, 4, "Persian UI: menus, options, in-game interface", dic_ops(ed, "ui", UI_FILES), []))
     entries.append(build_patch(out, 5, "Persian units, buildings and city names", dic_ops(ed, "units", ["baseunite.dic", "ville_multi.dic"]), []))
     entries.append(build_patch(out, 6, "Persian unit descriptions (encyclopedia)", dic_ops(ed, "descriptions", ["long_description_unite.dic"]), []))
+    entries.append(build_patch(out, 7, "Persian campaign, operations and tutorial texts", dic_ops(ed, "campaign", campaign_files(ed)), []))
     write_index(out, entries)
 
 
