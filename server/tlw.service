@@ -1,0 +1,19 @@
+[Unit]
+Description=The Last War game server (lobby gateway + accounts)
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/tlw
+ExecStart=/usr/bin/node /opt/tlw/server.js 8080
+Restart=always
+RestartSec=2
+User=tlw
+Environment=GATEWAY_PORT=8081
+Environment=CONTROL_PORT=8082
+Environment=TLW_REQUIRE_AUTH=1
+Environment=TLW_ADMIN_USER=admin
+Environment=TLW_ADMIN_PASSWORD=CHANGE_ME
+
+[Install]
+WantedBy=multi-user.target
+

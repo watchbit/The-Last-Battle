@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>پنل مدیریت آخرین نبرد</title>
+<style>
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css');
+:root { --bg: #14110f; --panel: #211c18; --line: #3a302a; --text: #f1e9e2; --muted: #a8988b; --accent: #c8322a; --ok: #4f9a5a; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: Vazirmatn, Tahoma, sans-serif; font-size: 15px; }
+header { padding: 16px 24px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+h1 { margin: 0; font-size: 20px; }
+main { max-width: 1100px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; }
+section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+h2 { margin: 0 0 12px; font-size: 17px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 8px 6px; border-bottom: 1px solid var(--line); text-align: right; vertical-align: middle; }
+th { color: var(--muted); font-weight: 500; }
+button { font: inherit; border: 1px solid var(--line); background: #2d2520; color: var(--text); padding: 5px 12px; border-radius: 6px; cursor: pointer; }
+button.primary { background: var(--accent); border-color: var(--accent); }
+button.danger { color: #ff8b80; }
+input, textarea { font: inherit; background: #120f0d; color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; }
+textarea { width: 100%; min-height: 90px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.tag { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: #2d2520; }
+.tag.on { background: var(--ok); }
+.stats { display: flex; gap: 24px; }
+.stats b { display: block; font-size: 22px; }
+#msg { color: var(--muted); }
+.ltr { direction: ltr; unicode-bidi: embed; }
+</style>
+</head>
+<body>
+<header><h1>پنل مدیریت آخرین نبرد</h1><span id="msg"></span></header>
+<main>
+  <section>
+    <h2>وضعیت</h2>
+    <div class="stats"><div><b id="sUsers">-</b>کاربران</div><div><b id="sOnline">-</b>آنلاین در بازی</div><div><b id="sLobbies">-</b>لابی‌ها</div><div><b id="sPatches">-</b>پچ‌های منتشرشده</div></div>
+  </section>
+  <section>
+    <h2>انتشار پچ جدید</h2>
+    <div class="row">
+      <input type="file" id="pFile" accept=".zip">
+      <input id="pName" placeholder="نام پچ (اختیاری)" size="36">
+      <label><input type="checkbox" id="pPub" checked> منتشر شود</label>
+      <button class="primary" id="pUp">آپلود</button>
+    </div>
+    <p id="pMsg" class="muted"></p>
+  </section>
+  <section>
+    <h2>پچ‌ها</h2>
+    <table><thead><tr><th>شماره</th><th>نام</th><th>حجم</th><th>وضعیت</th><th></th></tr></thead><tbody id="patches"></tbody></table>
+  </section>
+  <section>
+    <h2>اخبار لانچر</h2>
+    <textarea id="news"></textarea>
+    <div class="row"><button class="primary" id="newsSave">ذخیره</button></div>
+  </section>
+  <section>
+    <h2>کاربران</h2>
+    <div class="row"><input id="uFilter" placeholder="جستجو"></div>
+    <table><thead><tr><th>نام کاربری</th><th>نام نمایشی</th><th>سطح</th><th>برد/باخت</th><th>وضعیت</th><th></th></tr></thead><tbody id="users"></tbody></table>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fa = n => Number(n).toLocaleString('fa-IR');
+let state = null;
+async function api(path, opts) { const r = await fetch(path, opts); return r.json(); }
+async function refresh() {
+  state = await api('/admin/api/state');
+  const pubs = state.index.patches.filter(p => p.published);
+  $('sUsers').textContent = fa(state.users.length); $('sOnline').textContent = fa(state.online.players); $('sLobbies').textContent = fa(state.lobbies); $('sPatches').textContent = fa(pubs.length);
+  if (document.activeElement !== $('news')) $('news').value = state.index.news || '';
+  $('patches').innerHTML = state.index.patches.map(p => `<tr><td>${fa(p.id)}</td><td>${esc(p.name)}</td><td>${fa(Math.ceil(p.size / 1024))} KB</td>
+    <td><span class="tag ${p.published ? 'on' : ''}">${p.published ? 'منتشرشده' : 'پیش‌نویس'}</span></td>
+    <td class="row"><button data-p="${p.id}" data-a="${p.published ? 'unpublish' : 'publish'}">${p.published ? 'لغو انتشار' : 'انتشار'}</button><button class="danger" data-p="${p.id}" data-a="delete">حذف</button></td></tr>`).join('');
+  drawUsers();
+}
+function drawUsers() {
+  const q = $('uFilter').value.trim().toLowerCase();
+  $('users').innerHTML = state.users.filter(u => !q || u.username.includes(q) || u.display.toLowerCase().includes(q)).map(u => `<tr><td class="ltr">${esc(u.username)}</td><td>${esc(u.display)}</td><td>${fa(u.stats.level)}</td><td>${fa(u.stats.wins)} / ${fa(u.stats.losses)}</td>
+    <td>${u.banned ? '<span class="tag">مسدود</span>' : ''} ${u.admin ? '<span class="tag on">مدیر</span>' : ''}</td>
+    <td class="row"><button data-u="${esc(u.username)}" data-a="${u.banned ? 'unban' : 'ban'}">${u.banned ? 'رفع مسدودیت' : 'مسدود کردن'}</button><button data-u="${esc(u.username)}" data-a="${u.admin ? 'unadmin' : 'admin'}">${u.admin ? 'حذف مدیر' : 'مدیر'}</button></td></tr>`).join('');
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.p) { if (b.dataset.a === 'delete' && !confirm('پچ حذف شود؟')) return; await api(`/admin/api/patch/${b.dataset.p}/${b.dataset.a}`, { method: 'POST' }); refresh(); }
+  if (b.dataset.u) { await api(`/admin/api/user/${b.dataset.u}/${b.dataset.a}`, { method: 'POST' }); refresh(); }
+});
+$('uFilter').addEventListener('input', drawUsers);
+$('newsSave').onclick = async () => { await api('/admin/api/news', { method: 'POST', body: JSON.stringify({ news: $('news').value }) }); $('msg').textContent = 'اخبار ذخیره شد'; };
+$('pUp').onclick = async () => {
+  const f = $('pFile').files[0]; if (!f) return;
+  $('pMsg').textContent = 'در حال آپلود...';
+  const q = new URLSearchParams({ name: $('pName').value, publish: $('pPub').checked ? '1' : '0' });
+  const r = await api('/admin/api/patch?' + q, { method: 'POST', body: f });
+  $('pMsg').textContent = r.ok ? `پچ شماره ${fa(r.patch.id)} ثبت شد` : (r.error || 'خطا');
+  refresh();
+};
+refresh(); setInterval(refresh, 15000);
+</script>
+</body>
+</html>
