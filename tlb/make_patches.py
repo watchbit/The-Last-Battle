@@ -68,6 +68,34 @@ def campaign_files(ed):
     return [p[len(base):] for p in ed.list() if p.lower().startswith(base) and "\\" in p[len(base):]]
 
 
+BRAND = os.path.join(os.path.dirname(os.path.abspath(__file__)), "brand")
+LOGO_TEXTURES = ["gen\\ww2\\resflash\\escape_menu\\escape_menu_ib1.tgv",
+                 "gen\\ww2\\resflash\\interface_outgame\\interface_outgame_i182.tgv",
+                 "gen\\ww2\\resflash\\interface_outgame\\interface_outgame_i242.tgv"]
+
+
+def logo_tgv(w, h, scale):
+    from PIL import Image
+    from rusemod.tmst import make_tgv, zipo_pack
+    logo = Image.open(os.path.join(BRAND, "logo.png")).convert("RGBA")
+    k = min(w * scale / logo.width, h * scale / logo.height)
+    logo = logo.resize((max(1, round(logo.width * k)), max(1, round(logo.height * k))), Image.LANCZOS)
+    canvas = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    canvas.alpha_composite(logo, ((w - logo.width) // 2, (h - logo.height) // 2))
+    r, g, b, a = canvas.split()
+    raw = Image.merge("RGBA", (b, g, r, a)).tobytes()
+    return make_tgv(w, h, "A8R8G8B8_LIN", [zipo_pack(raw)], 1)
+
+
+def logo_ops(ed):
+    from ruse_mod_engine import tgv
+    ops = []
+    for p in LOGO_TEXTURES:
+        w, h, _, _ = tgv._parse(ed.get(p))
+        ops.append(("ZZ_Win.dat", p, logo_tgv(w, h, 1.0 if h < 100 else 0.6)))
+    return ops
+
+
 def main(game, out, fonts):
     ed = edata.open_dat(os.path.join(game, DATA_DIR, "ZZ_Win.dat"))
     entries = []
@@ -78,6 +106,7 @@ def main(game, out, fonts):
     entries.append(build_patch(out, 5, "Persian units, buildings and city names", dic_ops(ed, "units", ["baseunite.dic", "ville_multi.dic"]), []))
     entries.append(build_patch(out, 6, "Persian unit descriptions (encyclopedia)", dic_ops(ed, "descriptions", ["long_description_unite.dic"]), []))
     entries.append(build_patch(out, 7, "Persian campaign, operations and tutorial texts", dic_ops(ed, "campaign", campaign_files(ed)), []))
+    entries.append(build_patch(out, 8, "Brand: The Last Battle logo replaces the R.U.S.E. logo in menus", logo_ops(ed), []))
     write_index(out, entries)
 
 
