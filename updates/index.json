@@ -1,0 +1,18 @@
+{
+ "patches": [
+  {
+   "id": 1,
+   "name": "Language name: Persian (plain Unicode)",
+   "file": "patch_001.zip",
+   "size": 11803,
+   "sha256": "930ed74e281abf29a1646da30ea72cf914a7f90e447e31913d3689c82bcae16c"
+  },
+  {
+   "id": 2,
+   "name": "Language name: Persian (shaped, visual order)",
+   "file": "patch_002.zip",
+   "size": 11844,
+   "sha256": "934ee613aee1408790a404ad81102f628bd11615c6d8ddfefddbb94402111f90"
+  }
+ ]
+}
