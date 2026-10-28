@@ -3,6 +3,7 @@ import os
 import sys
 
 from patcher import DATA_DIR, build_patch, write_index
+import fa
 from ruse_mod_engine import dic, edata
 
 LANG_DIR = "genlocalisation\\ww2\\localisation\\"
@@ -50,12 +51,25 @@ def font_ops(fonts):
     ]
 
 
+def ui_ops(ed):
+    tr = fa.load("ui")
+    base = LANG_DIR + "translations\\%s\\"
+    files = ["interface_options.dic", "interface_in_game.dic", "loadsave.dic", "network.dic", "trophies.dic",
+             "trophysystem.dic", "xlast.dic", "ai-descriptors.dic", "flash_txt.dic"]
+    ops = []
+    for f in files:
+        us, cz = ed.get(base % "us" + f), ed.get(base % "cz" + f)
+        ops.append(("ZZ_Win.dat", base % "cz" + f, fa.translate_dic(us, cz, tr)))
+    return ops
+
+
 def main(game, out, fonts):
     ed = edata.open_dat(os.path.join(game, DATA_DIR, "ZZ_Win.dat"))
     entries = []
     entries.append(build_patch(out, 1, "Language name: Persian (plain Unicode)", lang_dic_ops(ed, "فارسی"), []))
     entries.append(build_patch(out, 2, "Language name: Persian (shaped, visual order)", lang_dic_ops(ed, visual("فارسی")), []))
     entries.append(build_patch(out, 3, "Font: Vazir replaces UbiGame Text (regular, bold)", font_ops(fonts), []))
+    entries.append(build_patch(out, 4, "Persian UI: menus, options, in-game interface", ui_ops(ed), []))
     write_index(out, entries)
 
 
